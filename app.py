@@ -1,4 +1,3 @@
-# dashboard.py
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -97,15 +96,15 @@ def generate_control_chart(df):
 
 # Main function
 def main():
-    st.sidebar.title('Navigation')
+    st.sidebar.title('Root Cause Analysis')
 
     # Show other charts with icons
     icons = {
-        'Pareto': '📊',
-        'Scatter': '⚫',
-        'Distribution 1': '📈',
-        'Distribution 2': '📊',
-        'Control Chart': '📉'
+        f'Pareto 📊📈': '📊📈',
+        'Scatter ⚫': '⚫',
+        'Distribution 1 📈': '📈',
+        'Distribution 2 📊': '📊',
+        'Control Chart 📉': '📉'
     }
 
     # Radio button to select option
@@ -115,35 +114,35 @@ def main():
     ])
 
     if 'About' in option:
+        st.subheader("Please select Chart for getting info of chart")
         for chart_name, icon in icons.items():
-            if st.sidebar.button(f'{icon} {chart_name}'):
-                st.subheader(f'{chart_name} Options')
-                if chart_name == 'Pareto':
+            if st.sidebar.button(f'{icon} {chart_name}', key=f'{chart_name}'):
+                #st.subheader(f'{chart_name} Options')
+                if 'Pareto' in chart_name:
                     about_pareto()
-                elif chart_name == 'Scatter':
+                elif 'Scatter' in chart_name:
                     about_scatter()
-                elif chart_name == 'Distribution 1' or chart_name == 'Distribution 2':
+                elif 'Distribution'in  chart_name :
                     about_distribution()
-                elif chart_name == 'Control Chart':
+                elif 'Control Chart' in chart_name :
                     about_control()
-
     elif 'Chart' in option:
-        st.subheader("Chart Options")
+        st.subheader("Please select Chart for getting plot")
         selected_chart = st.sidebar.radio("Select Chart", list(icons.keys()))
 
         if selected_chart:
             uploaded_file = st.sidebar.file_uploader(f'Upload data for {selected_chart}', type=['csv', 'xlsx'])
             if uploaded_file is not None:
                 df = pd.read_csv(uploaded_file) if uploaded_file.name.endswith('csv') else pd.read_excel(uploaded_file)
-                if selected_chart == 'Pareto':
+                if 'Pareto' in selected_chart:
                     threshold = st.slider('Threshold', 0, 100, 80, 5)
-                    st.plotly_chart(generate_pareto_chart(df, threshold), use_container_width=True)
-                elif selected_chart == 'Scatter':
-                    st.plotly_chart(generate_scatter_plot(df), use_container_width=True)
-                elif selected_chart == 'Distribution 1' or selected_chart == 'Distribution 2':
-                    st.plotly_chart(generate_distribution_plot(df), use_container_width=True)
-                elif selected_chart == 'Control Chart':
-                    st.plotly_chart(generate_control_chart(df), use_container_width=True)
+                    show_pareto_chart(df, threshold)
+                elif 'Scatter' in selected_chart:
+                    show_scatter_plot(df)
+                elif 'Distribution' in selected_chart:
+                    show_distribution_plot(df)
+                elif 'Control Chart' in selected_chart:
+                    show_control_chart(df)
 
 # Run the app
 if __name__ == "__main__":
